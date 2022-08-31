@@ -1,203 +1,209 @@
 class Node {
-    constructor(data, next = null) {
-        this.data = data;
-        this.next = next;
-    }
+  constructor(data, next = null) {
+    this.data = data;
+    this.next = next;
+  }
 }
 
 class LinkedList {
-    constructor() {
-        this.head = null;
-        this.size = 0;
+  constructor() {
+    this.head = null;
+    this.size = 0;
+  }
+
+  /*===========================   CREATE   ============================ */
+  // Insert at index
+  insertAt(data, index) {
+    // If index is out of bounds
+    if (index < 0 || index > this.size) {
+      console.log(`Insert index '${index}' is out of bounds`);
+      return;
     }
 
-    // Insert at index
-    insertAt(data, index) {
-        // If index is out of bounds
-        if (index < 0 || index > this.size) {
-            console.log(`Insert index '${index}' is out of bounds`);
-            return;
-        }
-
-        if (index === 0) {
-            this.head = new Node(data, this.head);
-            this.size++;
-            return;
-        }
-
-        // Else traverse till (index - 1) and insert at index
-        const node = new Node(data);
-        let current = this.head,
-            prev, prevNodeIndex = 0;
-
-        while (prevNodeIndex < index) {
-            prev = current;
-            current = current.next;
-            prevNodeIndex++;
-        }
-        node.next = current;
-        prev.next = node;
-        this.size++;
+    if (index === 0) {
+      this.head = new Node(data, this.head);
+      this.size++;
+      return;
     }
 
-    // Insert at first
-    insertFirst(data) {
-        this.insertAt(data, 0);
+    // Else traverse till (index - 1) and insert at index
+    const node = new Node(data);
+    let current = this.head,
+      prev,
+      prevNodeIndex = 0;
+
+    while (prevNodeIndex < index) {
+      prev = current;
+      current = current.next;
+      prevNodeIndex++;
+    }
+    node.next = current;
+    prev.next = node;
+    this.size++;
+  }
+
+  // Insert at first
+  insertFirst(data) {
+    this.insertAt(data, 0);
+  }
+
+  // Insert at last
+  insertLast(data) {
+    this.insertAt(data, this.size);
+  }
+
+  /*===========================   READ   ============================ */
+  // Get at index
+  getAt(index) {
+    // If list is empty
+    if (!this.head) {
+      console.log(`Cannot fetch as list is empty`);
+      return;
     }
 
-    // Insert at last
-    insertLast(data) {
-        this.insertAt(data, this.size);
+    // If index is out of bounds
+    if (index < 0 || index >= this.size) {
+      console.log(`Fetch index '${index}' is out of bounds`);
+      return;
     }
 
-    // Remove at index
-    removeAt(index) {
-        // If list is empty
-        if (!this.head) {
-            console.log(`Cannot remove as list is empty`);
-            return;
-        }
+    // Else traverse till index
+    let current = this.head,
+      currNodeIndex = 0;
 
-        // If index is out of bounds
-        if (index < 0 || index >= this.size) {
-            console.log(`Remove index '${index}' is out of bounds`);
-            return;
-        }
+    while (current) {
+      if (currNodeIndex === index) {
+        console.log(`Node at index '${index}' is ${current.data}`);
+        return;
+      }
+      current = current.next;
+      currNodeIndex++;
+    }
+  }
 
-        if (index === 0) {
-            this.head = this.head.next;
-            this.size--;
-            return;
-        }
+  // Get at first
+  getFirst() {
+    this.getAt(0);
+  }
 
-        // Else traverse till (index - 1) and remove at index
-        let current = this.head,
-            prev, prevNodeIndex = 0;
+  // Get at last
+  getLast() {
+    this.getAt(this.size - 1);
+  }
 
-        while (prevNodeIndex < index) {
-            prev = current;
-            current = current.next;
-            prevNodeIndex++;
-        }
-        prev.next = current.next;
-        this.size--;
+  /*===========================   UPDATE   ============================ */
+  // Update at index
+  updateAt(data, index) {
+    // If list is empty
+    if (!this.head) {
+      console.log(`Cannot update as list is empty`);
+      return;
     }
 
-    // Remove at first
-    removeFirst() {
-        this.removeAt(0);
+    // If index is out of bounds
+    if (index < 0 || index > this.size) {
+      console.log(`Update index '${index}' is out of bounds`);
+      return;
     }
 
-    // Remove at last
-    removeLast() {
-        this.removeAt(this.size - 1);
+    if (index === 0) {
+      this.head.data = data;
+      return;
     }
 
-    // Get at index
-    getAt(index) {
-        // If list is empty
-        if (!this.head) {
-            console.log(`Cannot fetch as list is empty`);
-            return;
-        }
+    // Else traverse till index and update the data property
+    let current = this.head,
+      currNodeIndex = 0;
 
-        // If index is out of bounds
-        if (index < 0 || index >= this.size) {
-            console.log(`Fetch index '${index}' is out of bounds`);
-            return;
-        }
+    while (current) {
+      if (currNodeIndex === index) {
+        current.data = data;
+        return;
+      }
+      current = current.next;
+      currNodeIndex++;
+    }
+  }
 
-        // Else traverse till index
-        let current = this.head,
-            currNodeIndex = 0;
+  // Update at first
+  updateFirst(data) {
+    this.updateAt(data, 0);
+  }
 
-        while (current) {
-            if (currNodeIndex === index) {
-                console.log(`Node at index '${index}' is ${current.data}`);
-                return;
-            }
-            current = current.next;
-            currNodeIndex++;
-        }
+  // Update at last
+  updateLast(data) {
+    this.updateAt(data, this.size - 1);
+  }
+
+  /*===========================   DELETE   ============================ */
+  // Remove at index
+  removeAt(index) {
+    // If list is empty
+    if (!this.head) {
+      console.log(`Cannot remove as list is empty`);
+      return;
     }
 
-    // Get at first
-    getFirst() {
-        this.getAt(0);
+    // If index is out of bounds
+    if (index < 0 || index >= this.size) {
+      console.log(`Remove index '${index}' is out of bounds`);
+      return;
     }
 
-    // Get at last
-    getLast() {
-        this.getAt(this.size - 1);
+    if (index === 0) {
+      this.head = this.head.next;
+      this.size--;
+      return;
     }
 
-    // Update at index
-    updateAt(data, index) {
-        // If list is empty
-        if (!this.head) {
-            console.log(`Cannot update as list is empty`);
-            return;
-        }
+    // Else traverse till (index - 1) and remove at index
+    let current = this.head,
+      prev,
+      prevNodeIndex = 0;
 
-        // If index is out of bounds
-        if (index < 0 || index > this.size) {
-            console.log(`Update index '${index}' is out of bounds`);
-            return;
-        }
+    while (prevNodeIndex < index) {
+      prev = current;
+      current = current.next;
+      prevNodeIndex++;
+    }
+    prev.next = current.next;
+    this.size--;
+  }
 
-        if (index === 0) {
-            this.head.data = data;
-            return;
-        }
+  // Remove at first
+  removeFirst() {
+    this.removeAt(0);
+  }
 
-        // Else traverse till index and update the data property
-        let current = this.head,
-            currNodeIndex = 0;
+  // Remove at last
+  removeLast() {
+    this.removeAt(this.size - 1);
+  }
 
-        while (current) {
-            if (currNodeIndex === index) {
-                current.data = data;
-                return;
-            }
-            current = current.next;
-            currNodeIndex++;
-        }
+  // Clear list
+  clearList() {
+    this.head = null;
+    this.size = 0;
+  }
+
+  // Print list
+  printList() {
+    // If list is empty
+    if (!this.head) {
+      console.log(`Cannot print as list is empty`);
+      return;
     }
 
-    // Update at first
-    updateFirst(data) {
-        this.updateAt(data, 0);
+    let current = this.head,
+      list = "";
+
+    while (current) {
+      list += ` ${current.data} ->`;
+      current = current.next;
     }
-
-    // Update at last
-    updateLast(data) {
-        this.updateAt(data, this.size - 1);
-    }
-
-    // Clear list
-    clearList() {
-        this.head = null;
-        this.size = 0;
-    }
-
-    // Print list
-    printList() {
-        // If list is empty
-        if (!this.head) {
-            console.log(`Cannot print as list is empty`);
-            return;
-        }
-
-        let current = this.head,
-            list = '';
-
-        while (current) {
-            list += ` ${current.data} ->`;
-            current = current.next;
-        }
-        list += ' null';
-        console.log(list);
-    }
+    list += " null";
+    console.log(list);
+  }
 }
 
 const ll = new LinkedList();
