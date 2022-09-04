@@ -44,8 +44,7 @@ Array.prototype.myReduce = function (cb, initialVal) {
   const inputArr = this;
   const len = inputArr.length;
   // If no initialVal passed, take first element as initialVal
-  // If initialVal passed, start from 1st element,
-  // else start from 2nd
+  // else execute the callback to get updated acc
   for (let i = 0; i < len; ++i) {
     acc = acc !== undefined ? cb(acc, inputArr[i], i, inputArr) : inputArr[i];
   }
@@ -89,7 +88,7 @@ const myFunc = function (city, country) {
 };
 
 // myFunc.call(context, 1,2,3) => context.myFunc(...args)
-Function.prototype.myCall = function (context = {}, ...args) {
+Function.prototype.myCall = function (context = globalThis, ...args) {
   if (typeof this !== "function") {
     throw new Error(this + " is not callable");
   }
@@ -97,7 +96,7 @@ Function.prototype.myCall = function (context = {}, ...args) {
     throw new Error(context + " can't be the context");
   }
   // To prevent overriding of existing context method with same name
-  const uniqueFuncName = "func--" + Date.now();
+  const uniqueFuncName = Symbol();
   context[uniqueFuncName] = this; // temporarily adding it to context
   const result = context[uniqueFuncName](...args); // invoking it
   delete context[uniqueFuncName]; // deleting it
@@ -109,7 +108,7 @@ Function.prototype.myCall = function (context = {}, ...args) {
 // console.log(user2);
 
 // myFunc.apply(context, [1,2,3]) => context.myFunc(...args)
-Function.prototype.myApply = function (context = {}, args = []) {
+Function.prototype.myApply = function (context = globalThis, args = []) {
   if (typeof this !== "function") {
     throw new Error(this + " is not callable");
   }
@@ -117,9 +116,9 @@ Function.prototype.myApply = function (context = {}, args = []) {
     throw new Error(context + " can't be the context");
   }
   if (!Array.isArray(args)) {
-    throw new TypeError("CreateListFromArrayLike called on non-object");
+    throw new TypeError("apply() expects the 2nd argument to be an array");
   }
-  const uniqueFuncName = "func--" + Date.now();
+  const uniqueFuncName = Symbol();
   context[uniqueFuncName] = this;
   const result = context[uniqueFuncName](...args);
   delete context[uniqueFuncName];
@@ -130,17 +129,16 @@ Function.prototype.myApply = function (context = {}, args = []) {
 // myFunc.myApply(user2, ["Mumbai", "India"]);
 // console.log(user2);
 
-// const boundFunc = myFunc.bind(context, 1,2,3) =>
-// context.boundFunc(...args, ...funcArgs)
-Function.prototype.myBind = function (context = {}, ...args) {
+Function.prototype.myBind = function (context = globalThis, ...args) {
   if (typeof this !== "function") {
-    throw new Error(this + "isn't a function and cannot be bound");
+    throw new Error(this + " isn't a function and cannot be bound");
   }
   if (typeof context !== "object") {
     throw new Error(context + " can't be the context");
   }
+  const uniqueFuncName = Symbol();
+
   return (...funcArgs) => {
-    const uniqueFuncName = "func--" + Date.now();
     context[uniqueFuncName] = this;
     const result = context[uniqueFuncName](...args, ...funcArgs);
     delete context[uniqueFuncName];
@@ -148,7 +146,7 @@ Function.prototype.myBind = function (context = {}, ...args) {
   };
 };
 
-// console.log(user2);
-// const boundFunc = myFunc.myBind(user2, "Mumbai");
-// boundFunc("India");
-// console.log(user2);
+console.log(user2);
+const boundFunc = myFunc.myBind(user2, "Mumbai");
+boundFunc("India");
+console.log(user2);
