@@ -81,7 +81,7 @@ class CircularLinkedlist {
         let current = this.head;
 
         for (let i = 0; i < position - 2; i++) {
-            if ( current.next !== this.head ) return;
+            if ( current.next === this.head ) return;
             current = current.next;
         }
 
